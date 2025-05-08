@@ -79,4 +79,14 @@ public class HomeSteps {
     public void userClicksOnTheProduct(String prod) {
         homePage.clickProduct(prod);
     }
+
+    @Then("verify the hamburger menu is opened")
+    public void verifyTheHamburgerMenuIsOpened() {
+        Assert.assertTrue(homePage.isHamBurgerMenuOpened());
+    }
+
+    @And("user click on reset app button")
+    public void userClickOnResetAppButton() {
+        homePage.clickResetBtn();
+    }
 }

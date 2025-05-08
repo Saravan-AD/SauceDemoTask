@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.Select;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class HomePage extends BasePage{
@@ -25,6 +26,9 @@ public class HomePage extends BasePage{
     @FindBy(xpath = "//button[contains(@id,'add-to-cart')]")
     List<WebElement> addToCartBtnList;
 
+    @FindBy(className = "inventory_item_label")
+    List<WebElement> itemLabel;
+
     @FindBy(className = "shopping_cart_badge")
     WebElement quantity;
 
@@ -39,6 +43,11 @@ public class HomePage extends BasePage{
 
     @FindBy(className="inventory_item_price")
     List<WebElement> itemPrice;
+
+    @FindBy(id = "reset_sidebar_link")
+    WebElement resetBtn;
+
+    String itemXpath="//div[text()='%s']";
 
     public boolean isUserOnHomePage(){
         return isDisplayed(shoppingCartLink);
@@ -59,6 +68,7 @@ public class HomePage extends BasePage{
 
     public void clickAddToCart(int prod) {
         ConfigReader.setConfigValue("product"+prod+".name",itemName.get(prod-1).getText());
+        System.out.println(addToCartBtnList);
         addToCartBtnList.get(prod-1).click();
     }
 
@@ -71,7 +81,7 @@ public class HomePage extends BasePage{
     }
 
     public boolean isAddToCartBtnVisible(int prod) {
-        return isDisplayed(addToCartBtnList.get(prod-1));
+        return isDisplayed(itemLabel.get(prod-1).findElement(By.xpath("./following-sibling::div//button[contains(@id,'add-to-cart')]")));
     }
 
     public void clickCart() {
@@ -116,5 +126,29 @@ public class HomePage extends BasePage{
 
     public void clickProduct(String prod) {
 
+        String result = null;
+        List<String> product = itemName.stream()
+                .map(WebElement::getText).toList();
+        String search = ConfigReader.getConfigValue(prod);
+
+        Optional<String> matched = product.stream()
+                .filter(s -> s.equalsIgnoreCase(search))
+                .findFirst();
+
+        if (matched.isPresent()) {
+             result = matched.get();
+        }
+
+        System.out.println(result);
+        driver.findElement(By.xpath(String.format(itemXpath,result))).click();
+    }
+
+    public boolean isHamBurgerMenuOpened() {
+        waitUntilVisible(logout);
+        return isDisplayed(logout);
+    }
+
+    public void clickResetBtn() {
+        resetBtn.click();
     }
 }

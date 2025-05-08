@@ -2,11 +2,17 @@ Feature: Verify checkout functionalities
 
   Background:
     Given user open website
-
-  Scenario: Submit valid checkout info
     When user enters username "login.name" and password "login.password"
     And clicks login button
     Then verify user is on inventory page
+
+  Scenario: Verify user can checkout with a product in cart
+    When user clicks add to cart of product 1
+    And user clicks cart icon
+    And user clicks checkout button
+    Then verify if your information page is displayed
+
+  Scenario: Submit valid checkout info
     When user clicks add to cart of product 1
     And user clicks cart icon
     And user clicks checkout button
@@ -18,9 +24,6 @@ Feature: Verify checkout functionalities
     Then verify review page is displayed
 
   Scenario: Submit checkout info without providing zip code
-    When user enters username "login.name" and password "login.password"
-    And clicks login button
-    Then verify user is on inventory page
     When user clicks add to cart of product 1
     And user clicks cart icon
     And user clicks checkout button
@@ -30,10 +33,7 @@ Feature: Verify checkout functionalities
     And user clicks continue button
     Then verify postal code error message is displayed
 
-  Scenario: Verify user can place an order and completely checkout
-    When user enters username "login.name" and password "login.password"
-    And clicks login button
-    Then verify user is on inventory page
+  Scenario: Verify user can finish checkout
     When user clicks add to cart of product 1
     And user clicks cart icon
     And user clicks checkout button
@@ -45,10 +45,7 @@ Feature: Verify checkout functionalities
     And user clicks finish button
     Then verify the confirmation message is displayed
 
-  Scenario: Verify user cannot place an order with empty cart
-    When user enters username "login.name" and password "login.password"
-    And clicks login button
-    Then verify user is on inventory page
+  Scenario: Verify user cannot checkout with an empty cart
     When user clicks cart icon
     And user clicks checkout button
     Then verify that it is not redirected to your information page
